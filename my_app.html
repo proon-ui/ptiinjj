@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Proon Industries – App Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0c10, #1a1d2e);
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
+            color: #e5e9f0;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #2a2f3a;
+            padding-bottom: 20px;
+        }
+
+        .title h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .title p {
+            color: #8b92a8;
+            font-size: 0.9rem;
+        }
+
+        .admin-area {
+            background: #1e1f2e;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .admin-btn {
+            background: #f59e0b;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .admin-btn:hover {
+            background: #d97706;
+            transform: scale(1.02);
+        }
+
+        /* Search & filter */
+        .search-bar {
+            margin-bottom: 32px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: #1a1d24;
+            border: 1px solid #2a2f3a;
+            padding: 12px 20px;
+            border-radius: 40px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .search-bar select {
+            background: #1a1d24;
+            border: 1px solid #2a2f3a;
+            padding: 12px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* App grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .app-card {
+            background: #14161f;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #2a2f3a;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+            border-color: #f59e0b40;
+        }
+
+        .app-icon {
+            width: 70px;
+            height: 70px;
+            background: #0f1119;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .app-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .app-description {
+            color: #a0a5b9;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .app-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f59e0b;
+            margin-bottom: 16px;
+        }
+
+        .app-price span {
+            font-size: 0.9rem;
+            color: #8b92a8;
+        }
+
+        .download-btn {
+            background: #f59e0b;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background: #d97706;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .edit-btn, .delete-btn {
+            flex: 1;
+            background: #2a2f3a;
+            border: none;
+            padding: 6px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: #ccc;
+            transition: 0.2s;
+        }
+
+        .edit-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1a1d2e;
+            border-radius: 32px;
+            padding: 28px;
+            width: 90%;
+            max-width: 550px;
+            border: 1px solid #f59e0b;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #f59e0b;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            background: #0f1119;
+            border: 1px solid #2a2f3a;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .modal-content textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .save-btn {
+            background: #f59e0b;
+            border: none;
+            color: #000;
+        }
+
+        .cancel-btn {
+            background: #2a2f3a;
+            border: none;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #8b92a8;
+        }
+
+        footer {
+            margin-top: 48px;
+            text-align: center;
+            color: #4a4f62;
+            font-size: 0.8rem;
+            border-top: 1px solid #2a2f3a;
+            padding-top: 24px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="title">
+            <h1>⚡ Proon Industries App Store</h1>
+            <p>Discover and download amazing apps • Author: proonindustries@outlook.com</p>
+        </div>
+        <div class="admin-area">
+            <button id="adminLoginBtn" class="admin-btn">🔐 Admin Panel</button>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Search apps...">
+        <select id="sortSelect">
+            <option value="name">Sort by Name</option>
+            <option value="priceLow">Sort by Price (Low to High)</option>
+            <option value="priceHigh">Sort by Price (High to Low)</option>
+        </select>
+    </div>
+
+    <div id="appsContainer" class="apps-grid">
+        <!-- apps will be dynamically loaded -->
+    </div>
+    <footer>
+        © 2026 Proon Industries – All apps are hosted by their respective developers. Download at your own risk.
+    </footer>
+</div>
+
+<!-- Modal for adding/editing app -->
+<div id="appModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle">Add New App</h2>
+        <input type="text" id="appName" placeholder="App Name" autocomplete="off">
+        <textarea id="appDesc" placeholder="Short description"></textarea>
+        <input type="text" id="appIcon" placeholder="Icon (emoji or FontAwesome class, e.g., 🎮 or fab fa-python)">
+        <input type="text" id="appUrl" placeholder="App URL (must start with https://)">
+        <input type="text" id="appPrice" placeholder="Price (e.g., 0.00 for free, or 4.99)">
+        <div class="modal-buttons">
+            <button class="cancel-btn" id="closeModalBtn">Cancel</button>
+            <button class="save-btn" id="saveAppBtn">Save App</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- STORAGE KEYS ----------
+    const STORAGE_KEY = 'proon_appstore_apps';
+    const AUTH_KEY = 'proon_admin_authenticated';
+
+    // Sample initial apps (the author can delete/modify them)
+    const defaultApps = [
+        {
+            id: "1",
+            name: "OmniForge Polyglot IDE",
+            description: "Professional IDE with Python, JS, C, C++, C#, SQL, polyglot mode, USB/Bluetooth flashing.",
+            icon: "⚡",
+            url: "https://omniforge.example.com/app",
+            price: "0.00",
+            authorEmail: "proonindustries@outlook.com"
+        },
+        {
+            id: "2",
+            name: "Smart Home Controller",
+            description: "Control your IoT devices with voice and gestures.",
+            icon: "🏠",
+            url: "https://smart-home.example.com",
+            price: "9.99",
+            authorEmail: "proonindustries@outlook.com"
+        }
+    ];
+
+    // Load apps from localStorage
+    function loadApps() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch(e) { return [...defaultApps]; }
+        } else {
+            // initialize with default apps
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultApps));
+            return [...defaultApps];
+        }
+    }
+
+    let apps = loadApps();
+    let isAdmin = false;   // will be set after password
+    let editingId = null; // for edit mode
+
+    // Helper to save apps
+    function saveAppsToStorage() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
+    }
+
+    // Render the app grid
+    function renderApps() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const sortBy = document.getElementById('sortSelect').value;
+        let filtered = apps.filter(app => app.name.toLowerCase().includes(searchTerm) || app.description.toLowerCase().includes(searchTerm));
+        
+        // sort
+        if (sortBy === 'name') {
+            filtered.sort((a,b) => a.name.localeCompare(b.name));
+        } else if (sortBy === 'priceLow') {
+            filtered.sort((a,b) => parseFloat(a.price || 0) - parseFloat(b.price || 0));
+        } else if (sortBy === 'priceHigh') {
+            filtered.sort((a,b) => parseFloat(b.price || 0) - parseFloat(a.price || 0));
+        }
+        
+        const container = document.getElementById('appsContainer');
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="empty-state">✨ No apps found. Come back later!</div>`;
+            return;
+        }
+        
+        container.innerHTML = filtered.map(app => `
+            <div class="app-card" data-id="${app.id}">
+                <div class="app-icon">${app.icon || '📦'}</div>
+                <div class="app-name">${escapeHtml(app.name)}</div>
+                <div class="app-description">${escapeHtml(app.description)}</div>
+                <div class="app-price">${parseFloat(app.price || 0) === 0 ? 'FREE' : `$${app.price}`} <span>${parseFloat(app.price) !== 0 ? 'one‑time' : ''}</span></div>
+                <button class="download-btn" data-url="${app.url}">📲 Download / Open</button>
+                ${isAdmin ? `
+                <div class="admin-buttons">
+                    <button class="edit-btn" data-id="${app.id}">✏️ Edit</button>
+                    <button class="delete-btn" data-id="${app.id}">🗑️ Delete</button>
+                </div>
+                ` : ''}
+            </div>
+        `).join('');
+        
+        // attach event listeners for download buttons
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const url = btn.getAttribute('data-url');
+                if (url) window.open(url, '_blank');
+            });
+        });
+        
+        if (isAdmin) {
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = btn.getAttribute('data-id');
+                    openEditModal(id);
+                });
+            });
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = btn.getAttribute('data-id');
+                    if (confirm('Delete this app permanently?')) {
+                        apps = apps.filter(app => app.id !== id);
+                        saveAppsToStorage();
+                        renderApps();
+                    }
+                });
+            });
+        }
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // Modal handling
+    const modal = document.getElementById('appModal');
+    function openModal(editMode = false, appData = null) {
+        modal.style.display = 'flex';
+        if (editMode && appData) {
+            document.getElementById('modalTitle').innerText = 'Edit App';
+            document.getElementById('appName').value = appData.name || '';
+            document.getElementById('appDesc').value = appData.description || '';
+            document.getElementById('appIcon').value = appData.icon || '';
+            document.getElementById('appUrl').value = appData.url || '';
+            document.getElementById('appPrice').value = appData.price || '0.00';
+            editingId = appData.id;
+        } else {
+            document.getElementById('modalTitle').innerText = 'Add New App';
+            document.getElementById('appName').value = '';
+            document.getElementById('appDesc').value = '';
+            document.getElementById('appIcon').value = '';
+            document.getElementById('appUrl').value = '';
+            document.getElementById('appPrice').value = '0.00';
+            editingId = null;
+        }
+    }
+    
+    function closeModal() {
+        modal.style.display = 'none';
+        editingId = null;
+    }
+    
+    function saveAppFromModal() {
+        const name = document.getElementById('appName').value.trim();
+        const description = document.getElementById('appDesc').value.trim();
+        const icon = document.getElementById('appIcon').value.trim() || '📱';
+        const url = document.getElementById('appUrl').value.trim();
+        const price = document.getElementById('appPrice').value.trim();
+        
+        if (!name || !url) {
+            alert('Please fill at least Name and URL');
+            return;
+        }
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            alert('URL must start with http:// or https://');
+            return;
+        }
+        
+        if (editingId) {
+            // update existing
+            const index = apps.findIndex(a => a.id === editingId);
+            if (index !== -1) {
+                apps[index] = {
+                    ...apps[index],
+                    name, description, icon, url, price: price || '0.00',
+                    authorEmail: 'proonindustries@outlook.com'
+                };
+            }
+        } else {
+            // create new
+            const newId = Date.now().toString();
+            apps.push({
+                id: newId,
+                name,
+                description,
+                icon,
+                url,
+                price: price || '0.00',
+                authorEmail: 'proonindustries@outlook.com'
+            });
+        }
+        saveAppsToStorage();
+        renderApps();
+        closeModal();
+    }
+    
+    function openEditModal(id) {
+        const app = apps.find(a => a.id === id);
+        if (app) openModal(true, app);
+    }
+    
+    // Admin authentication (simple password prompt)
+    function adminLogin() {
+        const pwd = prompt("Enter admin password:");
+        if (pwd === "proon2026") {   // you can change this password
+            isAdmin = true;
+            localStorage.setItem(AUTH_KEY, 'true');
+            document.getElementById('adminLoginBtn').innerHTML = '👑 Admin Mode ON';
+            // add "Add App" button after login
+            if (!document.getElementById('addAppBtn')) {
+                const adminDiv = document.querySelector('.admin-area');
+                const addBtn = document.createElement('button');
+                addBtn.id = 'addAppBtn';
+                addBtn.className = 'admin-btn';
+                addBtn.innerHTML = '+ Add App';
+                addBtn.style.background = '#10b981';
+                addBtn.addEventListener('click', () => openModal(false));
+                adminDiv.appendChild(addBtn);
+            }
+            renderApps();
+        } else {
+            alert('Wrong password! Access denied.');
+            isAdmin = false;
+            localStorage.removeItem(AUTH_KEY);
+            document.getElementById('adminLoginBtn').innerHTML = '🔐 Admin Panel';
+            const addBtn = document.getElementById('addAppBtn');
+            if (addBtn) addBtn.remove();
+            renderApps();
+        }
+    }
+    
+    // Check stored admin session on load
+    function checkAdminSession() {
+        const storedAuth = localStorage.getItem(AUTH_KEY);
+        if (storedAuth === 'true') {
+            isAdmin = true;
+            document.getElementById('adminLoginBtn').innerHTML = '👑 Admin Mode ON';
+            const adminDiv = document.querySelector('.admin-area');
+            if (!document.getElementById('addAppBtn')) {
+                const addBtn = document.createElement('button');
+                addBtn.id = 'addAppBtn';
+                addBtn.className = 'admin-btn';
+                addBtn.innerHTML = '+ Add App';
+                addBtn.style.background = '#10b981';
+                addBtn.addEventListener('click', () => openModal(false));
+                adminDiv.appendChild(addBtn);
+            }
+        }
+    }
+    
+    // Event listeners
+    document.getElementById('adminLoginBtn').addEventListener('click', adminLogin);
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    document.getElementById('saveAppBtn').addEventListener('click', saveAppFromModal);
+    document.getElementById('searchInput').addEventListener('input', () => renderApps());
+    document.getElementById('sortSelect').addEventListener('change', () => renderApps());
+    
+    // close modal when clicking outside
+    window.onclick = function(e) {
+        if (e.target === modal) closeModal();
+    };
+    
+    // initial render
+    checkAdminSession();
+    renderApps();
+</script>
+</body>
+</html>
